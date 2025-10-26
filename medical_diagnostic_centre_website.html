@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Medical Diagnostic Centre — Book via WhatsApp</title>
+  <meta name="description" content="Medical Diagnostic Centre — Book appointments quickly through WhatsApp." />
+  <style>
+    :root{--primary:#007bff;--muted:#6b7280;--bg:#f8fafc}
+    *{box-sizing:border-box}
+    body,html{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial}
+
+    #loader{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#fff;z-index:9999;flex-direction:column;transition:opacity .4s ease}
+    #loader .logo{width:120px;height:120px;background-size:contain;background-position:center;background-repeat:no-repeat;margin-bottom:16px}
+    .spinner{width:48px;height:48px;border-radius:50%;border:6px solid #eee;border-top-color:var(--primary);animation:spin 1s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    header{position:sticky;top:0;z-index:60;background:#fff;border-bottom:1px solid #e6eef6}
+    .container{max-width:1100px;margin:0 auto;padding:18px}
+    nav{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .brand{display:flex;align-items:center;gap:12px}
+    .brand img{height:52px;width:auto}
+    .navlinks{display:flex;gap:12px;align-items:center}
+    .navlinks a{color:#0b1220;text-decoration:none;padding:8px 10px;border-radius:8px}
+    .navlinks a:hover{background:#f4f8fb}
+    .btn-whatsapp{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(90deg,var(--primary),#0067d1);color:#fff;padding:9px 12px;border-radius:10px;text-decoration:none;font-weight:600}
+
+    main{padding:30px 18px}
+    .hero{display:grid;grid-template-columns:1fr 360px;gap:26px;align-items:start}
+    @media(max-width:920px){.hero{grid-template-columns:1fr}}
+
+    h1{font-size:28px;margin:0 0 10px}
+    p.lead{margin:0 0 16px;color:var(--muted)}
+
+    .card{background:#fff;border-radius:12px;box-shadow:0 8px 30px rgba(15,15,15,0.06);padding:16px}
+
+    form label{display:block;font-weight:600;margin-bottom:6px;font-size:14px}
+    input,select,textarea{width:100%;padding:10px;border-radius:8px;border:1px solid #e6eef6;font-size:14px}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    @media(max-width:520px){.form-row{grid-template-columns:1fr}}
+
+    .doctor-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:12px}
+    .doctor-card{padding:16px;border-radius:10px;border:1px solid #f0f3f6;background:#fff;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.05);cursor:pointer;transition:transform .2s ease, box-shadow .2s ease}
+    .doctor-card:hover{transform:translateY(-4px);box-shadow:0 4px 14px rgba(0,0,0,0.1)}
+    .doctor-card img{width:100px;height:100px;border-radius:50%;object-fit:cover;margin-bottom:8px}
+
+    .doctor-details{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;z-index:999}
+    .doctor-details .content{background:#fff;padding:20px;border-radius:12px;max-width:400px;width:90%;text-align:center}
+
+    footer{padding:22px 18px;background:#fafafa;margin-top:30px;border-top:1px solid #eef2f7}
+    .small{font-size:13px;color:var(--muted)}
+
+    .wa-float{position:fixed;right:18px;bottom:18px;background:#25d366;color:#fff;border-radius:999px;padding:12px 14px;display:flex;gap:10px;align-items:center;z-index:80;box-shadow:0 8px 20px rgba(37,211,102,0.16);text-decoration:none}
+
+    .menu-btn{display:none;border:0;background:transparent;font-size:20px}
+    @media(max-width:880px){.navlinks{display:none}.menu-btn{display:inline-block}}
+  </style>
+</head>
+<body>
+  <div id="loader">
+    <div class="logo" style="background-image:url('logo.jpg')"></div>
+    <div class="spinner"></div>
+    <div style="margin-top:12px;color:var(--muted)">Preparing Medical Diagnostic Centre...</div>
+  </div>
+
+  <header>
+    <div class="container">
+      <nav>
+        <div class="brand">
+          <img src="logo.jpg" alt="Logo" />
+          <div>
+            <div style="font-weight:700">Medical Diagnostic Centre</div>
+            <div class="small">Reliable tests • Fast reports</div>
+          </div>
+        </div>
+        <div>
+          <button class="menu-btn" id="menuBtn">☰</button>
+          <div class="navlinks" id="navLinks">
+            <a href="#home">Home</a>
+            <a href="#doctors">Doctors</a>
+            <a href="#about">About</a>
+            <a href="#contact">Contact</a>
+            <a class="btn-whatsapp" href="#" id="top-cta">Book on WhatsApp</a>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="home" class="hero">
+      <div>
+        <h1>Book diagnostic appointments via WhatsApp</h1>
+        <p class="lead">Fill the form to auto-generate a WhatsApp message with your appointment details.</p>
+        <div class="card">
+          <h3>Quick Booking</h3>
+          <form id="booking-form" onsubmit="openWhatsAppFromForm(event)">
+            <div class="form-row">
+              <div><label>Name</label><input id="name" required /></div>
+              <div><label>Phone</label><input id="phone" required /></div>
+            </div>
+            <div class="form-row" style="margin-top:10px">
+              <div>
+                <label>Doctor</label>
+                <select id="doctor" required>
+                  <option value="">Select a doctor</option>
+                  <option>Dr. A. Mukherjee (Pathologist)</option>
+                  <option>Dr. S. Das (Radiologist)</option>
+                  <option>Dr. R. Chatterjee (General Physician)</option>
+                  <option>Dr. M. Roy (Cardiologist)</option>
+                </select>
+              </div>
+              <div>
+                <label>Date</label><input type="date" id="date" />
+              </div>
+            </div>
+            <div style="margin-top:10px"><label>Notes</label><textarea id="notes"></textarea></div>
+            <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap">
+              <button type="submit" class="btn-whatsapp">Send on WhatsApp</button>
+              <button type="button" onclick="openWhatsAppQuick()" style="background:#fff;border:1px solid #e6eef6;padding:10px 12px;border-radius:8px">Open WhatsApp Chat</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section id="doctors" style="margin-top:22px">
+      <div class="card">
+        <h2>Our Doctors</h2>
+        <p class="small">Click on a doctor to see more details or book directly via WhatsApp.</p>
+        <div class="doctor-grid">
+          <div class="doctor-card" onclick="showDoctor('Dr. A. Mukherjee','Pathologist','Mon–Fri: 9 AM – 2 PM')">
+            <img src="https://via.placeholder.com/100" alt="Doctor" />
+            <h4>Dr. A. Mukherjee</h4>
+            <p class="small">Pathologist</p>
+          </div>
+          <div class="doctor-card" onclick="showDoctor('Dr. S. Das','Radiologist','Mon–Sat: 10 AM – 4 PM')">
+            <img src="https://via.placeholder.com/100" alt="Doctor" />
+            <h4>Dr. S. Das</h4>
+            <p class="small">Radiologist</p>
+          </div>
+          <div class="doctor-card" onclick="showDoctor('Dr. R. Chatterjee','General Physician','Tue–Sun: 8 AM – 1 PM')">
+            <img src="https://via.placeholder.com/100" alt="Doctor" />
+            <h4>Dr. R. Chatterjee</h4>
+            <p class="small">General Physician</p>
+          </div>
+          <div class="doctor-card" onclick="showDoctor('Dr. M. Roy','Cardiologist','Mon–Fri: 11 AM – 3 PM')">
+            <img src="https://via.placeholder.com/100" alt="Doctor" />
+            <h4>Dr. M. Roy</h4>
+            <p class="small">Cardiologist</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="doctor-details" id="doctorModal">
+      <div class="content">
+        <h3 id="docName"></h3>
+        <p id="docSpec"></p>
+        <p id="docTime"></p>
+        <button onclick="bookDoctor()" style="margin-top:10px;background:#25d366;color:#fff;border:0;padding:8px 14px;border-radius:8px">Book via WhatsApp</button>
+        <button onclick="closeDoctor()" style="margin-top:10px;background:var(--primary);color:#fff;border:0;padding:8px 14px;border-radius:8px;margin-left:8px">Close</button>
+      </div>
+    </div>
+
+    <section id="about" style="margin-top:22px">
+      <div class="card">
+        <h2>About Medical Diagnostic Centre</h2>
+        <p class="small">We are a full-service diagnostic facility offering a wide range of laboratory tests, imaging, and preventive health packages. Our mission is to deliver fast, reliable results so patients can make informed healthcare decisions.</p>
+      </div>
+    </section>
+
+    <section id="contact" style="margin-top:22px">
+      <div class="card">
+        <h3>Contact / Visit</h3>
+        <p class="small">Address: Bablabona Hospital More, Domkal, Murshidabad, West Bengal — 742303</p>
+        <p class="small">Email: help.medicaldiagnosticcentre@gmail.com</p>
+        <a class="btn-whatsapp" href="#" onclick="openWhatsAppQuick()">Chat on WhatsApp</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+        <div class="small">© <strong>Medical Diagnostic Centre</strong> — All rights reserved</div>
+        <div class="small">Email: help.medicaldiagnosticcentre@gmail.com • WhatsApp: +91 8001358535</div>
+      </div>
+    </div>
+  </footer>
+
+  <a class="wa-float" href="#" id="waFloat">WhatsApp</a>
+
+  <script>
+    const WA_NUMBER = '918001358535';
+    let selectedDoctor = '';
+
+    function openWhatsAppQuick(){
+      const msg = 'Hello! I would like to book an appointment at Medical Diagnostic Centre.';
+      window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`,'_blank');
+    }
+
+    function openWhatsAppFromForm(e){
+      e.preventDefault();
+      const name=document.getElementById('name').value;
+      const phone=document.getElementById('phone').value;
+      const doctor=document.getElementById('doctor').value;
+      const date=document.getElementById('date').value;
+      const notes=document.getElementById('notes').value;
+      let msg=`Appointment Booking Request:%0AName: ${name}%0APhone: ${phone}%0ADoctor: ${doctor}`;
+      if(date) msg+=`%0ADate: ${date}`;
+      if(notes) msg+=`%0ANotes: ${notes}`;
+      window.open(`https://wa.me/${WA_NUMBER}?text=${msg}`,'_blank');
+    }
+
+    function showDoctor(name,spec,time){
+      selectedDoctor = name;
+      document.getElementById('docName').innerText=name;
+      document.getElementById('docSpec').innerText=spec;
+      document.getElementById('docTime').innerText='Available: '+time;
+      document.getElementById('doctorModal').style.display='flex';
+    }
+
+    function bookDoctor(){
+      const msg = `Hello! I would like to book an appointment with ${selectedDoctor} at Medical Diagnostic Centre.`;
+      window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`,'_blank');
+    }
+
+    function closeDoctor(){
+      document.getElementById('doctorModal').style.display='none';
+    }
+
+    window.addEventListener('load',()=>{
+      const loader=document.getElementById('loader');
+      loader.style.opacity='0';
+      setTimeout(()=>loader.remove(),400);
+    });
+  </script>
+</body>
+</html>
