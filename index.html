@@ -231,7 +231,7 @@
       box-shadow: 0 8px 20px rgba(37,211,102,0.16);
       text-decoration: none;
     }
-
+/* ========== Menu Side Button ========== */
     .menu-btn {
       display: none;
       border: 0;
@@ -242,6 +242,76 @@
       .navlinks { display: none; }
       .menu-btn { display: inline-block; }
     }
+
+@media(max-width:880px){
+  .navlinks { display: none; }
+  .menu-btn { display: inline-block; }
+}
+
+
+
+
+
+    
+    /* Mobile menu: hidden by default, animated slide-down */
+.navlinks {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Mobile behavior */
+@media (max-width: 880px) {
+  .navlinks {
+    /* collapsed style for animation */
+    flex-direction: column;
+    position: absolute;
+    top: 70px;              /* adjust to fit your header height */
+    right: 18px;
+    width: calc(100% - 36px);
+    max-width: 320px;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 10px 12px;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.12);
+    overflow: hidden;
+
+    /* start closed */
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: max-height 320ms cubic-bezier(.2,.8,.2,1), opacity 220ms ease, transform 320ms cubic-bezier(.2,.8,.2,1);
+    pointer-events: none; /* disable clicks when closed */
+  }
+
+  /* visible state */
+  .navlinks.open {
+    max-height: 420px; /* large enough to show your links; adjust if needed */
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  /* keep the hamburger visible */
+  .menu-btn { display: inline-block; }
+}
+
+/* Optional: make links look good in dropdown */
+.navlinks a {
+  display: block;
+  padding: 10px 8px;
+  color: #0b1220;
+  text-decoration: none;
+  border-radius: 8px;
+}
+.navlinks a:hover {
+  background: #f4f8fb;
+}
+
+
+    
+
+    
   </style>
 </head>
 
@@ -395,6 +465,95 @@ Ex Senior Resident AIIMS, New Delhi Consultant Obstetrics, Gynaecology & Inferti
     </div>
   </footer>
 
+  <script>
+  const menuBtn = document.getElementById("menuBtn");
+  const navLinks = document.getElementById("navLinks");
+
+  // Toggle nav menu visibility on mobile
+  menuBtn.addEventListener("click", () => {
+    if (navLinks.style.display === "flex") {
+      navLinks.style.display = "none";
+    } else {
+      navLinks.style.display = "flex";
+      navLinks.style.flexDirection = "column";
+      navLinks.style.background = "#fff";
+      navLinks.style.position = "absolute";
+      navLinks.style.top = "70px";
+      navLinks.style.right = "18px";
+      navLinks.style.padding = "12px";
+      navLinks.style.borderRadius = "12px";
+      navLinks.style.boxShadow = "0 4px 15px rgba(0,0,0,0.1)";
+      navLinks.style.zIndex = "999";
+    }
+  });
+
+  // Close menu when a link is clicked (optional)
+  navLinks.querySelectorAll("a").forEach(link => {
+    link.addEventListener("click", () => {
+      navLinks.style.display = "none";
+    });
+  });
+</script>
+
+
+
+
+
+
+  
+<script>
+  (function () {
+    const menuBtn = document.getElementById('menuBtn');
+    const navLinks = document.getElementById('navLinks');
+
+    if (!menuBtn || !navLinks) return;
+
+    // Toggle open/close with class and animate
+    menuBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      navLinks.classList.toggle('open');
+      // animate focus for accessibility
+      if (navLinks.classList.contains('open')) {
+        // focus first link for keyboard users
+        const firstLink = navLinks.querySelector('a');
+        if (firstLink) firstLink.focus();
+      }
+    });
+
+    // Close when clicking a link
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        navLinks.classList.remove('open');
+      });
+    });
+
+    // Close when clicking outside the menu
+    document.addEventListener('click', (ev) => {
+      if (!navLinks.classList.contains('open')) return;
+      const target = ev.target;
+      if (!navLinks.contains(target) && target !== menuBtn) {
+        navLinks.classList.remove('open');
+      }
+    });
+
+    // Optional: close on escape key
+    document.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Escape' && navLinks.classList.contains('open')) {
+        navLinks.classList.remove('open');
+        menuBtn.focus();
+      }
+    });
+  })();
+</script>
+
+
+
+
+
+
+
+
+  
 
   <a class="wa-float" href="https://wa.me/918001358535" id="waFloat">WhatsApp</a>
 
