@@ -1,25 +1,60 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Medical Diagnostic Centre — Book via WhatsApp</title>
-  <meta name="description" content="Medical Diagnostic Centre — Book appointments quickly through WhatsApp." />
-  <style>
-    :root {
-      --primary: #007bff;
-      --muted: #6b7280;
-      --bg: #f8fafc;
-    }
-    * { box-sizing: border-box; }
-    body, html {
-      height: 100%;
-      margin: 0;
-      font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
-      background: var(--bg);
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Diagnostic Centre</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- React & Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-    /* ========== Loader ========== */
+    <!-- Custom Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Import Map: This fixes the "useContext" error by forcing a single React version -->
+    <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@18.2.0",
+        "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+        "lucide-react": "https://esm.sh/lucide-react@0.263.1?deps=react@18.2.0",
+        "framer-motion": "https://esm.sh/framer-motion@10.12.16?deps=react@18.2.0,react-dom@18.2.0"
+      }
+    }
+    </script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-bengali { font-family: 'Noto Sans Bengali', sans-serif; }
+        
+        /* Custom Animations */
+        @keyframes blob {
+            0% { transform: translate(0px, 0px) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+            100% { transform: translate(0px, 0px) scale(1); }
+        }
+        .animate-blob {
+            animation: blob 7s infinite;
+        }
+        .animation-delay-2000 {
+            animation-delay: 2s;
+        }
+        
+        /* Hide scrollbar for neat tables */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+ /* ========== Loader ========== */
     #loader {
       position: fixed;
       inset: 0;
@@ -58,549 +93,946 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ========== Header / Navbar ========== */
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 60;
-      background: #fff;
-      border-bottom: 1px solid #e6eef6;
-    }
-    .container {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 18px;
-    }
-    nav {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .site-logo {
-      height: 58px;
-      width: auto;
-      border-radius: 12px;
-      object-fit: contain;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-      transition: transform 0.2s ease;
-    }
-    .site-logo:hover { transform: scale(1.05); }
-    .navlinks {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-    }
-    .navlinks a {
-      color: #0b1220;
-      text-decoration: none;
-      padding: 8px 10px;
-      border-radius: 8px;
-    }
-    .navlinks a:hover { background: #f4f8fb; }
-    .btn-whatsapp {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: linear-gradient(90deg, var(--primary), #0067d1);
-      color: #fff;
-      padding: 9px 12px;
-      border-radius: 10px;
-      text-decoration: none;
-      font-weight: 600;
-    }
-
-    /* ========== Main Layout ========== */
-    main { padding: 30px 18px; }
-    .hero {
-      display: grid;
-      grid-template-columns: 1fr 360px;
-      gap: 26px;
-      align-items: start;
-    }
-    @media(max-width:920px) {
-      .hero { grid-template-columns: 1fr; }
-    }
-    h1 { font-size: 28px; margin: 0 0 10px; }
-    p.lead { margin: 0 0 16px; color: var(--muted); }
-    .card {
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 8px 30px rgba(15,15,15,0.06);
-      padding: 16px;
-    }
-
-    /* ========== Form ========== */
-    form label {
-      display: block;
-      font-weight: 600;
-      margin-bottom: 6px;
-      font-size: 14px;
-    }
-    input, select, textarea {
-      width: 100%;
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #e6eef6;
-      font-size: 14px;
-    }
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-    @media(max-width:520px) {
-      .form-row { grid-template-columns: 1fr; }
-    }
-
-    /* ========== Doctors Grid ========== */
-    .doctor-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 16px;
-      margin-top: 12px;
-    }
-    .doctor-card {
-      padding: 16px;
-      border-radius: 10px;
-      border: 1px solid #f0f3f6;
-      background: #fff;
-      text-align: center;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-      cursor: pointer;
-      transition: transform .2s ease, box-shadow .2s ease;
-    }
-    .doctor-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 4px 14px rgba(0,0,0,0.1);
-    }
-    .doctor-card img {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      object-fit: cover;
-      margin-bottom: 8px;
-    }
-
-    /* ========== Doctor Modal ========== */
-    .doctor-details {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.6);
-      align-items: center;
-      justify-content: center;
-      z-index: 999;
-    }
-    .doctor-details .content {
-      background: #fff;
-      padding: 20px;
-      border-radius: 12px;
-      max-width: 400px;
-      width: 90%;
-      text-align: center;
-    }
-
-    /* ========== Footer ========== */
-    footer {
-      padding: 22px 18px;
-      background: #fafafa;
-      margin-top: 30px;
-      border-top: 1px solid #eef2f7;
-    }
-    .small { font-size: 13px; color: var(--muted); }
-
-    /* ========== WhatsApp Floating Button ========== */
-    .wa-float {
-      position: fixed;
-      right: 18px;
-      bottom: 18px;
-      background: #25d366;
-      color: #fff;
-      border-radius: 999px;
-      padding: 12px 14px;
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      z-index: 80;
-      box-shadow: 0 8px 20px rgba(37,211,102,0.16);
-      text-decoration: none;
-    }
-/* ========== Menu Side Button ========== */
-    .menu-btn {
-      display: none;
-      border: 0;
-      background: transparent;
-      font-size: 20px;
-    }
-    @media(max-width:880px) {
-      .navlinks { display: none; }
-      .menu-btn { display: inline-block; }
-    }
-
-@media(max-width:880px){
-  .navlinks { display: none; }
-  .menu-btn { display: inline-block; }
-}
-
-
-
-
-
-    
-    /* Mobile menu: hidden by default, animated slide-down */
-.navlinks {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-}
-
-/* Mobile behavior */
-@media (max-width: 880px) {
-  .navlinks {
-    /* collapsed style for animation */
-    flex-direction: column;
-    position: absolute;
-    top: 70px;              /* adjust to fit your header height */
-    right: 18px;
-    width: calc(100% - 36px);
-    max-width: 320px;
-    background: #ffffff;
-    border-radius: 12px;
-    padding: 10px 12px;
-    box-shadow: 0 8px 28px rgba(0,0,0,0.12);
-    overflow: hidden;
-
-    /* start closed */
-    max-height: 0;
-    opacity: 0;
-    transform: translateY(-8px);
-    transition: max-height 320ms cubic-bezier(.2,.8,.2,1), opacity 220ms ease, transform 320ms cubic-bezier(.2,.8,.2,1);
-    pointer-events: none; /* disable clicks when closed */
-  }
-
-  /* visible state */
-  .navlinks.open {
-    max-height: 420px; /* large enough to show your links; adjust if needed */
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
-  }
-
-  /* keep the hamburger visible */
-  .menu-btn { display: inline-block; }
-}
-
-/* Optional: make links look good in dropdown */
-.navlinks a {
-  display: block;
-  padding: 10px 8px;
-  color: #0b1220;
-  text-decoration: none;
-  border-radius: 8px;
-}
-.navlinks a:hover {
-  background: #f4f8fb;
-}
-
-
-    
-
-    
-  </style>
+      
+    </style>
 </head>
+<body class="bg-gray-50 text-gray-800">
 
-<body>
-  <!-- Loader Section -->
-  <div id="loader">
-    <div class="logo"></div>
-    <div class="spinner"></div>
-    <div style="margin-top:12px;color:var(--muted)">Preparing Medical Diagnostic Centre...</div>
-  </div>
+    <!-- Root Element for React -->
+    <div id="root"></div>
 
-  <!-- Header -->
-  <header>
-    <div class="container">
-      <nav>
-        <div class="brand">
-          <img src="PhotoRoom-20251017_210031.png" alt="Medical Diagnostic Centre Logo" class="site-logo" />
-          <div>
-            <div style="font-weight:700">Medical Diagnostic Centre</div>
-            <div class="small">Reliable tests • Fast reports</div>
-          </div>
-        </div>
-        <div>
-          <button class="menu-btn" id="menuBtn">☰</button>
-          <div class="navlinks" id="navLinks">
-            <a href="#home">Home</a>
-            <a href="#doctors">Doctors</a>
-            <a href="#about">About</a>
-            <a href="#contact">Contact</a>
-            <a href="privacy.html">Privacy Policy</a>
-            <a href="terms.html">Terms &amp; Conditions</a>
-            <a class="btn-whatsapp" href="https://wa.me/918001358535" id="top-cta">Book on WhatsApp</a>
-          </div>
-        </div>
-      </nav>
-    </div>
-  </header>
+    <!-- React Application Logic -->
+    <script type="text/babel" data-type="module">
+        import React, { useState, useEffect } from 'react';
+        import ReactDOM from 'react-dom/client';
+        import { 
+            Phone, MapPin, Mail, MessageCircle, Facebook, 
+            Calendar, Clock, User, Shield, Stethoscope, 
+            ChevronRight, CheckCircle, XCircle, LogOut, 
+            Menu, X, CreditCard, Lock, Search, Plus, Trash2, 
+            LayoutDashboard, Users, FileText, Settings, Edit, Filter,
+            TestTube, Activity, HeartPulse, Scan, FlaskConical, Syringe
+        } from 'lucide-react';
+        import { motion, AnimatePresence } from 'framer-motion';
 
-  <!-- Main Content -->
-  <main class="container">
-    <section id="home" class="hero">
-      <div>
-        <h1>Book diagnostic appointments via WhatsApp</h1>
-        <p class="lead">Fill the form to auto-generate a WhatsApp message with your appointment details.</p>
-        <div class="card">
-          <h3>Quick Booking</h3>
-          <form id="booking-form" onsubmit="openWhatsAppFromForm(event)">
-            <div class="form-row">
-              <div><label>Name</label><input id="name" required /></div>
-              <div><label>Phone</label><input id="phone" required /></div>
+        // --- Configuration & Constants ---
+        const CONTACT_INFO = {
+            address: "Domkal Hospital More, Domkal, Murshidabad, W.B, 742303",
+            reception: "+91 8001358535",
+            mobile: "+91 9434880573",
+            email: "help.medicaldiagnosticcentre@gmail.com",
+            whatsapp: "+918001358535", // WhatsApp format
+            facebook: "fb.com/centre.medicaldiagnostic"
+        };
+
+        const INITIAL_DOCTORS = [
+            {
+                id: 1,
+                name: "Dr. Satyam",
+                specialty: "Gynecologist",
+                qualification: "MBBS, DGO",
+                image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=300&h=300",
+                fee: 500,
+                available: true
+            },
+            {
+                id: 2,
+                name: "Dr. Prasezit Mazumdar",
+                specialty: "General Physician",
+                qualification: "MD Medicine",
+                image: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&q=80&w=300&h=300",
+                fee: 600,
+                available: true
+            }
+        ];
+
+        const DIAGNOSTIC_SERVICES = [
+            { name: "Blood Tests (Pathology)", icon: TestTube, desc: "CBC, Lipid Profile, Thyroid, Sugar, etc." },
+            { name: "Ultrasonography (USG)", icon: Activity, desc: "Abdomen, Pelvis, Pregnancy Scans." },
+            { name: "Digital X-Ray", icon: Scan, desc: "High-quality bone & chest imaging." },
+            { name: "ECG / EKG", icon: HeartPulse, desc: "Cardiac health monitoring." },
+            { name: "Urine Analysis", icon: FlaskConical, desc: "Routine, Culture & Sensitivity." },
+            { name: "Vaccination & Injection", icon: Syringe, desc: "Safe and hygienic administration." }
+        ];
+
+        // --- Mock QR Code Component ---
+        const PaymentQR = ({ amount, onConfirm, onCancel }) => (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 backdrop-blur-sm p-4">
+                <motion.div 
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl text-center"
+                >
+                    <h3 className="text-xl font-bold text-gray-800 mb-2">Scan to Pay</h3>
+                    <p className="text-gray-500 mb-4">Amount to Pay: ₹{amount}</p>
+                    
+                    <div className="bg-gray-100 p-4 rounded-xl mb-4 mx-auto w-48 h-48 flex items-center justify-center border-2 border-dashed border-teal-500 relative overflow-hidden group">
+                        <div className="absolute inset-0 grid grid-cols-6 grid-rows-6 gap-1 p-2 opacity-80">
+                            {[...Array(36)].map((_, i) => (
+                                <div key={i} className={`bg-black ${Math.random() > 0.5 ? 'opacity-100' : 'opacity-0'} rounded-sm transition-opacity duration-500`} />
+                            ))}
+                        </div>
+                        <div className="absolute inset-0 flex items-center justify-center">
+                            <div className="bg-white p-2 rounded-full shadow-lg">
+                                <CreditCard className="w-6 h-6 text-teal-600" />
+                            </div>
+                        </div>
+                        <div className="absolute top-0 left-0 w-full h-1 bg-teal-500 shadow-[0_0_10px_#14b8a6] animate-[scan_2s_ease-in-out_infinite]" />
+                    </div>
+
+                    <p className="text-xs text-gray-400 mb-6">UPI / Wallet / Net Banking</p>
+                    
+                    <div className="flex gap-3">
+                        <button 
+                            onClick={onCancel}
+                            className="flex-1 py-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 transition-colors"
+                        >
+                            Pay Later / Cash
+                        </button>
+                        <button 
+                            onClick={onConfirm}
+                            className="flex-1 py-2 rounded-lg bg-teal-600 text-white font-semibold hover:bg-teal-700 transition-colors shadow-lg shadow-teal-200"
+                        >
+                            Paid & Confirm
+                        </button>
+                    </div>
+                </motion.div>
             </div>
-            <div class="form-row" style="margin-top:10px">
-              <div>
-                <label>Doctor</label>
-                <select id="doctor" required>
-                  <option value="">Select a doctor</option>
-                  <option>Dr. Prasenjit Majumdar (General Physician)</option>
-                  <option>Dr. Satyam (Gynecologist)</option>
-                  <option>Dr.******* (Radiologist)</option>
-                  <option>Dr.******* (Cardiologist)</option>
-                </select>
-              </div>
-              <div>
-                <label>Date</label><input type="date" id="date" />
-              </div>
+        );
+
+        // --- Sub-Components ---
+
+        const Navbar = ({ view, setView, showMobileMenu, setShowMobileMenu }) => (
+            <nav className="bg-white shadow-md sticky top-0 z-40">
+                <div className="bg-teal-700 text-white text-xs py-1 px-4 overflow-hidden">
+                    <div className="max-w-7xl mx-auto flex justify-between items-center">
+                        <p className="animate-pulse flex items-center gap-2">
+                            <Clock size={12} /> Emergency? Call: {CONTACT_INFO.reception}
+                        </p>
+                        <div className="flex gap-4">
+                            <a href={`https://wa.me/${CONTACT_INFO.whatsapp}`} target="_blank" rel="noreferrer" className="hover:text-teal-200 flex items-center gap-1">
+                                <MessageCircle size={12} /> WhatsApp
+                            </a>
+                            <a href={`https://www.facebook.com/${CONTACT_INFO.facebook.split('/')[1]}`} target="_blank" rel="noreferrer" className="hover:text-teal-200 flex items-center gap-1">
+                                <Facebook size={12} /> Facebook
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+                    <div className="flex items-center gap-2 cursor-pointer" onClick={() => setView('home')}>
+                        <div className="w-10 h-10 bg-teal-600 rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-lg">M</div>
+                        <div>
+                            <h1 className="text-xl font-bold text-gray-800 leading-tight">Medical Diagnostic<br/><span className="text-teal-600">Centre</span></h1>
+                        </div>
+                    </div>
+
+                    <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-600">
+                        <button onClick={() => setView('home')} className={`hover:text-teal-600 transition ${view === 'home' ? 'text-teal-600' : ''}`}>Home</button>
+                        <button onClick={() => setView('booking')} className={`hover:text-teal-600 transition ${view === 'booking' ? 'text-teal-600' : ''}`}>Book Appointment</button>
+                        <button onClick={() => setView('login')} className={`hover:text-teal-600 transition ${view === 'login' ? 'text-teal-600' : ''}`}>Staff Login</button>
+                        
+                        <button onClick={() => setView('booking')} className="bg-teal-600 hover:bg-teal-700 text-white px-5 py-2.5 rounded-full transition shadow-md hover:shadow-lg flex items-center gap-2">
+                            <Calendar size={16} /> Book Now
+                        </button>
+                    </div>
+
+                    <button className="md:hidden text-gray-600" onClick={() => setShowMobileMenu(!showMobileMenu)}>
+                        {showMobileMenu ? <X /> : <Menu />}
+                    </button>
+                </div>
+
+                <AnimatePresence>
+                    {showMobileMenu && (
+                        <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="md:hidden bg-white border-t overflow-hidden">
+                            <div className="flex flex-col p-4 gap-4">
+                                <button onClick={() => { setView('home'); setShowMobileMenu(false); }} className="text-left font-medium">Home</button>
+                                <button onClick={() => { setView('booking'); setShowMobileMenu(false); }} className="text-left font-medium">Book Appointment</button>
+                                <button onClick={() => { setView('login'); setShowMobileMenu(false); }} className="text-left font-medium">Staff/Admin Login</button>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </nav>
+        );
+
+        const Hero = ({ doctors, setView }) => {
+            const [currentDocIndex, setCurrentDocIndex] = useState(0);
+
+            useEffect(() => {
+                if (doctors.length <= 1) return;
+                const interval = setInterval(() => {
+                    setCurrentDocIndex((prev) => (prev + 1) % doctors.length);
+                }, 4000); 
+                return () => clearInterval(interval);
+            }, [doctors.length]);
+
+            return (
+                <div className="relative bg-gradient-to-r from-teal-50 to-blue-50 py-20 px-4 overflow-hidden">
+                    <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12">
+                        <motion.div initial={{ x: -50, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ duration: 0.8 }} className="flex-1 z-10">
+                            <div className="inline-block bg-teal-100 text-teal-800 px-4 py-1 rounded-full text-sm font-semibold mb-6">Trusted Healthcare in Domkal</div>
+                            <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">Your Health is Our <br/> <span className="text-teal-600">Top Priority</span></h1>
+                            <p className="text-lg text-gray-600 mb-8 max-w-lg">Experience world-class diagnostics and expert consultation. Book appointments with top specialists seamlessly.</p>
+                            <div className="flex gap-4">
+                                <button onClick={() => setView('booking')} className="bg-teal-600 hover:bg-teal-700 text-white px-8 py-3 rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transition-all flex items-center gap-2">Book Appointment <ChevronRight size={20} /></button>
+                                <a href={`tel:${CONTACT_INFO.mobile}`} className="bg-white text-gray-700 border border-gray-200 hover:border-teal-500 px-8 py-3 rounded-full text-lg font-semibold shadow-sm hover:shadow-md transition-all flex items-center gap-2"><Phone size={20} /> Call Now</a>
+                            </div>
+                        </motion.div>
+                        
+                        <div className="flex-1 relative h-[400px] w-full flex items-center justify-center">
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-teal-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
+                            <div className="absolute -bottom-8 left-0 w-64 h-64 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
+                            
+                            <div className="relative w-full max-w-md h-full rounded-3xl shadow-2xl overflow-hidden bg-white border-4 border-white/50">
+                                <AnimatePresence mode='wait'>
+                                    <motion.div
+                                        key={currentDocIndex}
+                                        initial={{ opacity: 0, scale: 1.1 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        exit={{ opacity: 0 }}
+                                        transition={{ duration: 0.8 }}
+                                        className="absolute inset-0"
+                                    >
+                                        {doctors.length > 0 ? (
+                                            <>
+                                                <img 
+                                                    src={doctors[currentDocIndex].image} 
+                                                    alt={doctors[currentDocIndex].name} 
+                                                    className="w-full h-full object-cover"
+                                                />
+                                                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6 text-white">
+                                                    <h3 className="text-xl font-bold">{doctors[currentDocIndex].name}</h3>
+                                                    <p className="text-teal-300 font-medium">{doctors[currentDocIndex].specialty}</p>
+                                                </div>
+                                            </>
+                                        ) : (
+                                            <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-400">No Doctors Added</div>
+                                        )}
+                                    </motion.div>
+                                </AnimatePresence>
+                                
+                                <div className="absolute bottom-4 right-4 flex gap-2 z-10">
+                                    {doctors.map((_, idx) => (
+                                        <div 
+                                            key={idx} 
+                                            className={`w-2 h-2 rounded-full transition-all ${idx === currentDocIndex ? 'bg-teal-400 w-4' : 'bg-white/50'}`}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const DoctorCard = ({ doc, onBook }) => (
+            <motion.div whileHover={{ y: -10 }} className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 flex flex-col h-full">
+                <div className="h-48 overflow-hidden relative">
+                    <img src={doc.image} alt={doc.name} className="w-full h-full object-cover transition transform hover:scale-105 duration-500" />
+                    <div className="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-teal-700 shadow-sm">{doc.specialty}</div>
+                </div>
+                <div className="p-6 flex-1 flex flex-col">
+                    <h3 className="text-xl font-bold text-gray-800 mb-1">{doc.name}</h3>
+                    <p className="text-teal-600 font-medium text-sm mb-4">{doc.qualification}</p>
+                    <div className="mt-auto space-y-3">
+                        <div className="flex items-center text-gray-500 text-sm gap-2"><Clock size={16} /> Available: Mon - Sat</div>
+                        <div className="flex items-center justify-between">
+                            <span className="text-2xl font-bold text-gray-900">₹{doc.fee}</span>
+                            <button onClick={() => onBook(doc)} className="bg-gray-900 hover:bg-teal-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">Book Now</button>
+                        </div>
+                    </div>
+                </div>
+            </motion.div>
+        );
+
+        const Footer = ({ setView }) => (
+            <footer className="bg-gray-900 text-gray-300 py-12 px-4 mt-auto">
+                <div className="max-w-7xl mx-auto grid md:grid-cols-4 gap-8">
+                    <div className="col-span-1 md:col-span-2">
+                        <div className="flex items-center gap-2 mb-4 text-white">
+                            <div className="w-8 h-8 bg-teal-600 rounded flex items-center justify-center font-bold">M</div>
+                            <span className="text-xl font-bold">Medical Diagnostic Centre</span>
+                        </div>
+                        <h5 className="text-white font-semibold mb-2">About Medical Diagnostic Centre</h5>
+                        <p className="mb-6 text-gray-400 leading-relaxed text-sm pr-4">
+                            We are a full-service diagnostic facility offering a wide range of laboratory tests, imaging, and preventive health packages. Our mission is to deliver fast, reliable results so patients can make informed healthcare decisions.
+                        </p>
+                        <div className="flex gap-4">
+                            <a href={`https://wa.me/${CONTACT_INFO.whatsapp}`} target="_blank" rel="noreferrer" className="bg-gray-800 p-2 rounded-full hover:bg-teal-600 transition"><MessageCircle size={18} /></a>
+                            <a href={`https://www.facebook.com/${CONTACT_INFO.facebook.split('/')[1]}`} target="_blank" rel="noreferrer" className="bg-gray-800 p-2 rounded-full hover:bg-teal-600 transition"><Facebook size={18} /></a>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 className="text-white font-bold mb-4">Quick Links</h4>
+                        <ul className="space-y-2 text-sm">
+                            <li className="hover:text-teal-400 cursor-pointer transition-colors" onClick={() => setView('home')}>Home</li>
+                            <li className="hover:text-teal-400 cursor-pointer transition-colors" onClick={() => setView('booking')}>Book Appointment</li>
+                            <li className="hover:text-teal-400 cursor-pointer transition-colors" onClick={() => setView('login')}>Staff Login</li>
+                            <li className="hover:text-teal-400 cursor-pointer transition-colors" onClick={() => setView('privacy')}>Privacy Policy</li>
+                            <li className="hover:text-teal-400 cursor-pointer transition-colors" onClick={() => setView('terms')}>Terms & Conditions</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4 className="text-white font-bold mb-4">Contact Us</h4>
+                        <ul className="space-y-3 text-sm">
+                            <li className="flex gap-2 items-start"><MapPin size={16} className="mt-1 text-teal-500 shrink-0" /><span>{CONTACT_INFO.address}</span></li>
+                            <li className="flex gap-2 items-center"><Phone size={16} className="text-teal-500 shrink-0" /><span>{CONTACT_INFO.mobile}</span></li>
+                            <li className="flex gap-2 items-center"><Mail size={16} className="text-teal-500 shrink-0" /><span>{CONTACT_INFO.email}</span></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div className="border-t border-gray-800 mt-12 pt-8">
+                    <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-500">
+                        <div className="text-center md:text-left">
+                            <p>© Medical Diagnostic Centre — All rights reserved</p>
+                            <div className="mt-2 space-x-4">
+                                <span className="hover:text-teal-400 cursor-pointer transition-colors" onClick={() => setView('privacy')}>Privacy Policy</span>
+                                <span>•</span>
+                                <span className="hover:text-teal-400 cursor-pointer transition-colors" onClick={() => setView('terms')}>Terms & Conditions</span>
+                            </div>
+                        </div>
+                        
+                        <div className="text-center md:text-right">
+                            <p className="mb-1">Developer: <span className="text-teal-500 font-medium">iamfardinsk</span></p>
+                            <p className="text-xs text-gray-600">
+                                Email: help.medicaldiagnosticcentre@gmail.com • WhatsApp: +91 8001358535
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        );
+
+        const HomeView = ({ doctors, setView, startBooking }) => (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                <Hero doctors={doctors} setView={setView} />
+                
+                {/* Services Section */}
+                <div className="py-16 bg-white px-4">
+                    <div className="max-w-7xl mx-auto">
+                        <div className="text-center mb-12">
+                            <h2 className="text-3xl font-bold text-gray-900 mb-4">Our Diagnostic Services</h2>
+                            <p className="text-gray-600 max-w-2xl mx-auto">We provide accurate and timely results for a wide range of medical tests to ensure your health is always monitored.</p>
+                        </div>
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+                            {DIAGNOSTIC_SERVICES.map((service, idx) => (
+                                <div key={idx} className="bg-gray-50 p-6 rounded-xl hover:shadow-md transition text-center border border-gray-100 group">
+                                    <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-teal-600 mx-auto mb-4 shadow-sm group-hover:scale-110 transition">
+                                        <service.icon size={24} />
+                                    </div>
+                                    <h3 className="font-bold text-gray-800 text-sm mb-1">{service.name}</h3>
+                                    <p className="text-xs text-gray-500">{service.desc}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
+                <div className="max-w-7xl mx-auto px-4 py-16 bg-gray-50">
+                    <div className="text-center mb-12">
+                        <h2 className="text-3xl font-bold text-gray-900 mb-4">Our Specialists</h2>
+                        <p className="text-gray-600 max-w-2xl mx-auto">Meet our experienced team of doctors dedicated to providing the best healthcare services.</p>
+                    </div>
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {doctors.map(doc => <DoctorCard key={doc.id} doc={doc} onBook={startBooking} />)}
+                    </div>
+                </div>
+            </motion.div>
+        );
+
+        const BookingView = ({ doctors, selectedDoctor, setSelectedDoctor, startBooking, handleBookingSubmit, bookingStep, formData, setFormData }) => (
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-3xl mx-auto px-4 py-12 min-h-screen">
+                <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">Book Your Appointment</h2>
+                <div className="flex items-center justify-center mb-12">
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${bookingStep >= 0 ? 'bg-teal-600 text-white' : 'bg-gray-200 text-gray-500'}`}>1</div>
+                    <div className={`w-16 h-1 ${bookingStep >= 1 ? 'bg-teal-600' : 'bg-gray-200'}`}></div>
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${bookingStep >= 1 ? 'bg-teal-600 text-white' : 'bg-gray-200 text-gray-500'}`}>2</div>
+                </div>
+                {!selectedDoctor ? (
+                    <div className="grid md:grid-cols-2 gap-6">
+                        {doctors.map(doc => (
+                            <div key={doc.id} onClick={() => startBooking(doc)} className="cursor-pointer border-2 border-transparent hover:border-teal-500 rounded-2xl transition-all">
+                                <DoctorCard doc={doc} onBook={startBooking} />
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+                        <div className="flex items-center justify-between mb-8 pb-8 border-b">
+                            <div className="flex items-center gap-4">
+                                <img src={selectedDoctor.image} alt="" className="w-16 h-16 rounded-full object-cover" />
+                                <div>
+                                    <h3 className="font-bold text-lg">{selectedDoctor.name}</h3>
+                                    <p className="text-teal-600 text-sm">{selectedDoctor.specialty}</p>
+                                </div>
+                            </div>
+                            <button onClick={() => setSelectedDoctor(null)} className="text-sm text-red-500 hover:underline">Change</button>
+                        </div>
+                        <form onSubmit={handleBookingSubmit} className="space-y-6">
+                            <div className="grid md:grid-cols-2 gap-6">
+                                <div><label className="block text-sm font-medium text-gray-700 mb-2">Patient Name</label><input required type="text" className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-teal-500 outline-none" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} placeholder="Enter full name" /></div>
+                                <div><label className="block text-sm font-medium text-gray-700 mb-2">Age</label><input required type="number" className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-teal-500 outline-none" value={formData.age} onChange={e => setFormData({...formData, age: e.target.value})} placeholder="Age" /></div>
+                            </div>
+                            <div><label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label><input required type="tel" className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-teal-500 outline-none" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} placeholder="+91 XXXXX XXXXX" /></div>
+                            <div className="grid md:grid-cols-2 gap-6">
+                                <div><label className="block text-sm font-medium text-gray-700 mb-2">Preferred Date</label><input required type="date" className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-teal-500 outline-none" value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})} min={new Date().toISOString().split('T')[0]} /></div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">Preferred Time</label>
+                                    <select required className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-teal-500 outline-none" value={formData.time} onChange={e => setFormData({...formData, time: e.target.value})}>
+                                        <option value="">Select Time Slot</option>
+                                        <option value="10:00 AM - 11:00 AM">10:00 AM - 11:00 AM</option>
+                                        <option value="11:00 AM - 12:00 PM">11:00 AM - 12:00 PM</option>
+                                        <option value="05:00 PM - 06:00 PM">05:00 PM - 06:00 PM</option>
+                                        <option value="06:00 PM - 07:00 PM">06:00 PM - 07:00 PM</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div className="bg-gray-50 p-4 rounded-lg flex justify-between items-center"><span className="font-medium text-gray-600">Consultation Fee</span><span className="font-bold text-xl text-gray-900">₹{selectedDoctor.fee}</span></div>
+                            <button type="submit" className="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2">Proceed to Pay <CreditCard size={20} /></button>
+                        </form>
+                    </div>
+                )}
+            </motion.div>
+        );
+
+        const LoginView = ({ handleLogin, loginCreds, setLoginCreds, setView, loginError }) => (
+            <div className="flex items-center justify-center px-4 py-20 bg-gray-50">
+                <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white w-full max-w-md p-8 rounded-2xl shadow-xl">
+                    <div className="text-center mb-8">
+                        <div className="w-12 h-12 bg-teal-600 rounded-lg flex items-center justify-center text-white font-bold text-xl mx-auto mb-4">M</div>
+                        <h2 className="text-2xl font-bold text-gray-900">Staff Portal</h2>
+                        <p className="text-gray-500">Authorized personnel only</p>
+                    </div>
+                    <form onSubmit={handleLogin} className="space-y-6">
+                        {loginError && (
+                            <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm text-center border border-red-100 flex items-center justify-center gap-2">
+                                <XCircle size={16}/> {loginError}
+                            </div>
+                        )}
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">User ID</label>
+                            <div className="relative">
+                                <User className="absolute left-3 top-3 text-gray-400" size={18} />
+                                <input type="text" className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 outline-none" placeholder="Enter ID" value={loginCreds.id} onChange={e => setLoginCreds({...loginCreds, id: e.target.value})} />
+                            </div>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                            <div className="relative">
+                                <Lock className="absolute left-3 top-3 text-gray-400" size={18} />
+                                <input type="password" className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 outline-none" placeholder="Enter Password" value={loginCreds.pass} onChange={e => setLoginCreds({...loginCreds, pass: e.target.value})} />
+                            </div>
+                        </div>
+                        <button type="submit" className="w-full bg-gray-900 text-white py-2 rounded-lg font-medium hover:bg-gray-800 transition">Secure Login</button>
+                    </form>
+                    <button onClick={() => setView('home')} className="w-full mt-4 text-sm text-gray-500 hover:text-teal-600">Return to Home</button>
+                </motion.div>
             </div>
-            <div style="margin-top:10px"><label>Notes</label><textarea id="notes"></textarea></div>
-            <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap">
-              <button type="submit" class="btn-whatsapp">Send on WhatsApp</button>
-              <button type="button" onclick="openWhatsAppQuick()" style="background:#fff;border:1px solid #e6eef6;padding:10px 12px;border-radius:8px">Open WhatsApp Chat</button>
+        );
+
+        const AdminDashboard = ({ 
+            role, handleLogout, bookings, doctors, setDoctors, 
+            handleAdminAction, handleDeleteDoctor, handleSaveDoctor,
+            adminTab, setAdminTab, editingDoctor, setEditingDoctor,
+            bookingFilter, setBookingFilter 
+        }) => {
+            const today = new Date().toISOString().split('T')[0];
+            const todaysBookings = bookings.filter(b => b.timestamp.startsWith(today));
+            const pendingBookings = bookings.filter(b => b.status === 'Confirmed');
+
+            const filteredBookings = bookings.filter(b => {
+                if (bookingFilter === 'today') return b.timestamp.startsWith(today);
+                if (bookingFilter === 'upcoming') return b.date >= today;
+                return true;
+            }).sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+            return (
+                <div className="flex h-screen bg-gray-100">
+                    <div className="w-64 bg-gray-900 text-gray-400 flex flex-col">
+                        <div className="p-6 text-white font-bold text-xl flex items-center gap-2">
+                            <div className="w-8 h-8 bg-teal-600 rounded flex items-center justify-center">A</div>
+                            Admin Panel
+                        </div>
+                        <nav className="flex-1 p-4 space-y-2">
+                            <button onClick={() => setAdminTab('overview')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition ${adminTab === 'overview' ? 'bg-teal-600 text-white' : 'hover:bg-gray-800'}`}>
+                                <LayoutDashboard size={20} /> Overview
+                            </button>
+                            <button onClick={() => setAdminTab('bookings')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition ${adminTab === 'bookings' ? 'bg-teal-600 text-white' : 'hover:bg-gray-800'}`}>
+                                <FileText size={20} /> Appointments
+                            </button>
+                            <button onClick={() => setAdminTab('doctors')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition ${adminTab === 'doctors' ? 'bg-teal-600 text-white' : 'hover:bg-gray-800'}`}>
+                                <Users size={20} /> Doctors
+                            </button>
+                        </nav>
+                        <div className="p-4 border-t border-gray-800">
+                            <div className="flex items-center gap-3 mb-4 px-4">
+                                <div className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center text-white"><User size={16}/></div>
+                                <div>
+                                    <div className="text-white text-sm font-medium">{role === 'admin' ? 'Administrator' : 'Staff Member'}</div>
+                                    <div className="text-xs">{role === 'admin' ? 'Full Access' : 'Restricted'}</div>
+                                </div>
+                            </div>
+                            <button onClick={handleLogout} className="w-full flex items-center gap-2 text-red-400 hover:text-red-300 px-4 py-2 text-sm"><LogOut size={16} /> Sign Out</button>
+                        </div>
+                    </div>
+
+                    <div className="flex-1 overflow-auto">
+                        <div className="p-8">
+                            <header className="mb-8 flex justify-between items-center">
+                                <h1 className="text-2xl font-bold text-gray-800 capitalize">{adminTab}</h1>
+                                <div className="text-sm text-gray-500">Last updated: {new Date().toLocaleTimeString()}</div>
+                            </header>
+
+                            {adminTab === 'overview' && (
+                                <>
+                                    <div className="grid md:grid-cols-3 gap-6 mb-8">
+                                        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                                            <div className="text-gray-500 text-sm font-medium mb-1">Total Bookings</div>
+                                            <div className="text-3xl font-bold text-gray-900">{bookings.length}</div>
+                                            <div className="mt-2 text-sm text-green-600 flex items-center gap-1"><Plus size={14}/> {todaysBookings.length} today</div>
+                                        </div>
+                                        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                                            <div className="text-gray-500 text-sm font-medium mb-1">Total Revenue</div>
+                                            <div className="text-3xl font-bold text-teal-600">₹{bookings.reduce((acc, curr) => acc + parseInt(curr.amount), 0)}</div>
+                                            <div className="mt-2 text-sm text-gray-400">Lifetime earnings</div>
+                                        </div>
+                                        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                                            <div className="text-gray-500 text-sm font-medium mb-1">Active Doctors</div>
+                                            <div className="text-3xl font-bold text-blue-600">{doctors.length}</div>
+                                            <div className="mt-2 text-sm text-gray-400">Available for booking</div>
+                                        </div>
+                                    </div>
+
+                                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                                        <h3 className="font-bold text-gray-800 mb-4">Pending Action Items</h3>
+                                        {pendingBookings.length === 0 ? (
+                                            <p className="text-gray-500 text-sm">No pending appointments. All caught up!</p>
+                                        ) : (
+                                            <div className="space-y-3">
+                                                {pendingBookings.slice(0, 5).map(b => (
+                                                    <div key={b.id} className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg border border-yellow-100">
+                                                        <div>
+                                                            <div className="font-medium text-gray-900">{b.name}</div>
+                                                            <div className="text-xs text-gray-500">{b.doctor} • {b.time}</div>
+                                                        </div>
+                                                        <button onClick={() => handleAdminAction(b.id, 'complete')} className="text-xs bg-white border border-yellow-200 text-yellow-700 px-3 py-1 rounded hover:bg-yellow-100">Mark Complete</button>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                </>
+                            )}
+
+                            {adminTab === 'bookings' && (
+                                <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                                    <div className="p-4 border-b flex justify-between items-center bg-gray-50">
+                                        <div className="flex gap-2">
+                                            <button onClick={() => setBookingFilter('all')} className={`px-3 py-1 text-sm rounded-full ${bookingFilter === 'all' ? 'bg-white shadow text-teal-600 font-medium' : 'text-gray-500 hover:text-gray-700'}`}>All</button>
+                                            <button onClick={() => setBookingFilter('today')} className={`px-3 py-1 text-sm rounded-full ${bookingFilter === 'today' ? 'bg-white shadow text-teal-600 font-medium' : 'text-gray-500 hover:text-gray-700'}`}>Today</button>
+                                            <button onClick={() => setBookingFilter('upcoming')} className={`px-3 py-1 text-sm rounded-full ${bookingFilter === 'upcoming' ? 'bg-white shadow text-teal-600 font-medium' : 'text-gray-500 hover:text-gray-700'}`}>Upcoming</button>
+                                        </div>
+                                        <div className="relative">
+                                            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"/>
+                                            <input placeholder="Search..." className="pl-9 pr-4 py-1.5 text-sm border rounded-lg outline-none focus:border-teal-500"/>
+                                        </div>
+                                    </div>
+                                    <table className="w-full text-sm text-left">
+                                        <thead className="bg-gray-50 text-gray-500 font-medium border-b">
+                                            <tr>
+                                                <th className="px-6 py-3">Patient</th>
+                                                <th className="px-6 py-3">Doctor</th>
+                                                <th className="px-6 py-3">Date/Time</th>
+                                                <th className="px-6 py-3">Status</th>
+                                                <th className="px-6 py-3 text-right">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y">
+                                            {filteredBookings.length === 0 ? <tr><td colSpan="5" className="p-8 text-center text-gray-400">No bookings found.</td></tr> :
+                                            filteredBookings.map(book => (
+                                                <tr key={book.id} className="hover:bg-gray-50">
+                                                    <td className="px-6 py-3">
+                                                        <div className="font-medium text-gray-900">{book.name}</div>
+                                                        <div className="text-xs text-gray-500">{book.phone}</div>
+                                                    </td>
+                                                    <td className="px-6 py-3">{book.doctor}</td>
+                                                    <td className="px-6 py-3">
+                                                        <div className="text-gray-900">{book.date}</div>
+                                                        <div className="text-xs text-gray-500">{book.time}</div>
+                                                    </td>
+                                                    <td className="px-6 py-3">
+                                                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${book.status === 'Completed' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}>
+                                                            {book.status}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-6 py-3 text-right space-x-2">
+                                                        {book.status !== 'Completed' && (
+                                                            <button onClick={() => handleAdminAction(book.id, 'complete')} className="text-teal-600 hover:bg-teal-50 p-1 rounded" title="Mark Done"><CheckCircle size={16}/></button>
+                                                        )}
+                                                        {role === 'admin' && (
+                                                            <button onClick={() => handleAdminAction(book.id, 'delete')} className="text-red-500 hover:bg-red-50 p-1 rounded" title="Delete"><Trash2 size={16}/></button>
+                                                        )}
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            )}
+
+                            {adminTab === 'doctors' && (
+                                <div className="grid md:grid-cols-3 gap-6">
+                                    <div className="md:col-span-2 space-y-4">
+                                        {doctors.map(doc => (
+                                            <div key={doc.id} className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex justify-between items-center group">
+                                                <div className="flex items-center gap-4">
+                                                    <img src={doc.image} className="w-12 h-12 rounded-full object-cover" alt=""/>
+                                                    <div>
+                                                        <div className="font-bold text-gray-900">{doc.name}</div>
+                                                        <div className="text-sm text-gray-500">{doc.specialty} • {doc.qualification}</div>
+                                                        <div className="text-xs font-bold text-teal-600 mt-1">₹{doc.fee}</div>
+                                                    </div>
+                                                </div>
+                                                <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <button onClick={() => setEditingDoctor(doc)} className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg"><Edit size={16}/></button>
+                                                    {role === 'admin' && <button onClick={() => handleDeleteDoctor(doc.id)} className="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg"><Trash2 size={16}/></button>}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    <div className="md:col-span-1">
+                                        <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100 sticky top-4">
+                                            <h3 className="font-bold text-lg mb-4">{editingDoctor ? 'Edit Doctor' : 'Add New Doctor'}</h3>
+                                            <form key={editingDoctor ? editingDoctor.id : 'new'} onSubmit={handleSaveDoctor} className="space-y-4">
+                                                <div>
+                                                    <label className="text-xs font-bold text-gray-500 uppercase">Name</label>
+                                                    <input required name="name" defaultValue={editingDoctor?.name} className="w-full p-2 border rounded-lg text-sm" placeholder="Dr. Name"/>
+                                                </div>
+                                                <div>
+                                                    <label className="text-xs font-bold text-gray-500 uppercase">Specialty</label>
+                                                    <input required name="specialty" defaultValue={editingDoctor?.specialty} className="w-full p-2 border rounded-lg text-sm" placeholder="e.g. Cardiologist"/>
+                                                </div>
+                                                <div>
+                                                    <label className="text-xs font-bold text-gray-500 uppercase">Qualification</label>
+                                                    <input required name="qualification" defaultValue={editingDoctor?.qualification} className="w-full p-2 border rounded-lg text-sm" placeholder="e.g. MBBS, MD"/>
+                                                </div>
+                                                <div>
+                                                    <label className="text-xs font-bold text-gray-500 uppercase">Consultation Fee (₹)</label>
+                                                    <input required type="number" name="fee" defaultValue={editingDoctor?.fee} className="w-full p-2 border rounded-lg text-sm" placeholder="0.00"/>
+                                                </div>
+                                                <div className="flex gap-2 pt-2">
+                                                    {editingDoctor && <button type="button" onClick={() => setEditingDoctor(null)} className="flex-1 py-2 text-sm text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200">Cancel</button>}
+                                                    <button type="submit" className="flex-1 py-2 text-sm text-white bg-gray-900 rounded-lg hover:bg-gray-800">{editingDoctor ? 'Update' : 'Add Doctor'}</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const InfoPage = ({ title, content, setView }) => (
+            <div className="max-w-4xl mx-auto px-4 py-16 min-h-screen">
+                <button onClick={() => setView('home')} className="mb-6 flex items-center gap-2 text-teal-600 font-medium hover:underline">
+                    <ChevronRight className="rotate-180" size={20} /> Back to Home
+                </button>
+                <h1 className="text-4xl font-bold mb-8 text-gray-900">{title}</h1>
+                <div className="prose max-w-none text-gray-600 space-y-4 whitespace-pre-line leading-relaxed">
+                    {content}
+                </div>
             </div>
-          </form>
-        </div>
-      </div>
-    </section>
+        );
 
-    <section id="doctors" style="margin-top:22px">
-      <div class="card">
-        <h2>Our Doctors</h2>
-        <p class="small">Click on a doctor to see more details or book directly via WhatsApp.</p>
-        <div class="doctor-grid">
-          <div class="doctor-card" onclick="showDoctor('Dr. Prasenjit Majumdar','General Physician','Mon–Fri: 10 AM – 4 PM')">
-            <img src="istockphoto-177373093-612x612.jpg" alt="Doctor" />
-            <h4>Dr. Prasenjit Majumdar</h4>
-            <p class="small">General Physician</p>
-             <p class="small">M.B.B.S (KOL), MD.(WBUHS) & (WBMC)</p>
-          </div>
-          <div class="doctor-card" onclick="showDoctor('Dr. Satyam','Gynecologist','Mon–Fri: 10 AM – 4 PM')">
-            <img src="photo-1582750433449-648ed127bb54.jpg" alt="Doctor" />
-            <h4>Dr. Satyam</h4>
-            <p class="small">Gynecologist</p>
-            <p class="small">M.B.B.S, M.D, D.N.B (DGO), PCPNDT
-Ex Senior Resident AIIMS, New Delhi Consultant Obstetrics, Gynaecology & Infertility Specialist  </p>
-          </div>
-          <div class="doctor-card" onclick="showDoctor('Dr. S. Das','Radiologist','Mon–Sat: 10 AM – 4 PM')">
-            <img src="photo-1612349317150-e413f6a5b16d.jpg" alt="Doctor" />
-            <h4>Dr. *******</h4>
-            <p class="small">Radiologist</p>
-          </div>
-          <div class="doctor-card" onclick="showDoctor('Dr. R. Chatterjee','General Physician','Tue–Sun: 8 AM – 1 PM')">
-            <img src="istockphoto-1292015214-612x612.jpg" alt="Doctor" />
-            <h4>Dr. *******</h4>
-            <p class="small">General Physician</p>
-          </div>
-          <div class="doctor-card" onclick="showDoctor('Dr. M. Roy','Cardiologist','Mon–Fri: 11 AM – 3 PM')">
-            <img src="360_F_320744517_TaGkT7aRlqqWdfGUuzRKDABtFEoN5CiO.jpg" alt="Doctor" />
-            <h4>Dr. *******</h4>
-            <p class="small">Cardiologist</p>
-          </div>
-        </div>
-      </div>
-    </section>
+        const SuccessView = ({ setView, lastBooking }) => {
+            const [timeLeft, setTimeLeft] = useState(10);
 
-    <div class="doctor-details" id="doctorModal">
-      <div class="content">
-        <h3 id="docName"></h3>
-        <p id="docSpec"></p>
-        <p id="docTime"></p>
-        <button onclick="bookDoctor()" style="margin-top:10px;background:#25d366;color:#fff;border:0;padding:8px 14px;border-radius:8px">Book via WhatsApp</button>
-        <button onclick="closeDoctor()" style="margin-top:10px;background:var(--primary);color:#fff;border:0;padding:8px 14px;border-radius:8px;margin-left:8px">Close</button>
-      </div>
-    </div>
+            useEffect(() => {
+                const timer = setInterval(() => {
+                    setTimeLeft((prev) => prev - 1);
+                }, 1000);
 
-    <section id="about" style="margin-top:22px">
-      <div class="card">
-        <h2>About Medical Diagnostic Centre</h2>
-        <p class="small">We are a full-service diagnostic facility offering a wide range of laboratory tests, imaging, and preventive health packages. Our mission is to deliver fast, reliable results so patients can make informed healthcare decisions.</p>
-      </div>
-    </section>
+                const redirectTimeout = setTimeout(() => {
+                    if (lastBooking) {
+                        const message = `*New Booking Request*%0A%0A*Patient:* ${lastBooking.name}%0A*Age:* ${lastBooking.age}%0A*Phone:* ${lastBooking.phone}%0A*Doctor:* ${lastBooking.doctor}%0A*Date:* ${lastBooking.date}%0A*Time:* ${lastBooking.time}%0A*Fee:* ₹${lastBooking.amount}`;
+                        window.location.href = `https://wa.me/${CONTACT_INFO.whatsapp}?text=${message}`;
+                    }
+                }, 10000);
 
-    <section id="contact" style="margin-top:22px">
-      <div class="card">
-        <h3>Contact / Visit</h3>
-        <p class="small">Address: Bablabona Hospital More, Domkal, Murshidabad, West Bengal — 742303</p>
-        <p class="small">Email: help.medicaldiagnosticcentre@gmail.com</p>
-        <a class="btn-whatsapp" href="https://wa.me/918001358535" onclick="openWhatsAppQuick()">Chat on WhatsApp</a>
-      </div>
-    </section>
-  </main>
+                return () => {
+                    clearInterval(timer);
+                    clearTimeout(redirectTimeout);
+                };
+            }, [lastBooking]);
 
-  <footer>
-    <div class="container">
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
-        <div class="small">© <strong>Medical Diagnostic Centre</strong> — All rights reserved</div>
-        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
-        <a class="small" href="privacy.html">Privacy Policy</a>
-        <a class="small" href="terms.html">Terms &amp; Conditions</a>
-         <a class="small" href="https://omaairsk.github.io/iamfardinsk/" target="_blank" rel="noopener noreferrer">Developer: iamfardinsk</a>
-        <div class="small">Email: help.medicaldiagnosticcentre@gmail.com • WhatsApp: +91 8001358535</div>
-      </div>
-    </div>
-  </footer>
+            return (
+                <div className="min-h-screen flex items-center justify-center p-4 bg-teal-50">
+                    <motion.div initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white p-8 rounded-2xl shadow-xl text-center max-w-lg w-full border-t-4 border-teal-600">
+                        <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <CheckCircle className="text-green-600 w-10 h-10" />
+                        </div>
+                        <h2 className="text-2xl font-bold text-gray-900 mb-2">Booking Confirmed!</h2>
+                        
+                        <div className="bg-blue-50 border border-blue-100 p-4 rounded-xl mb-6 text-left">
+                            <h4 className="font-bold text-blue-800 mb-2 flex items-center gap-2">
+                                <CreditCard size={16}/> Payment Instruction
+                            </h4>
+                            <p className="text-sm text-gray-700 mb-3 leading-relaxed">
+                                Please Deposit The Booking Amount. If you haven't paid online, please pay at the Centre when you visit the Doctor & Collect the Card.
+                            </p>
+                            <p className="text-sm text-gray-700 font-bengali leading-relaxed">
+                                বুকিং এর টাকা জমা দিন। যদি অনলাইনে পেমেন্ট না করে থাকেন, তবে ডাক্তারের সাথে দেখা করার সময় সেন্টারে পেমেন্ট করুন এবং কার্ড সংগ্রহ করুন।
+                            </p>
+                        </div>
 
-  <script>
-  const menuBtn = document.getElementById("menuBtn");
-  const navLinks = document.getElementById("navLinks");
+                        <p className="text-gray-500 mb-6 text-sm">
+                            Redirecting to WhatsApp with your details in <span className="font-bold text-teal-600">{timeLeft}s</span>...
+                        </p>
 
-  // Toggle nav menu visibility on mobile
-  menuBtn.addEventListener("click", () => {
-    if (navLinks.style.display === "flex") {
-      navLinks.style.display = "none";
-    } else {
-      navLinks.style.display = "flex";
-      navLinks.style.flexDirection = "column";
-      navLinks.style.background = "#fff";
-      navLinks.style.position = "absolute";
-      navLinks.style.top = "70px";
-      navLinks.style.right = "18px";
-      navLinks.style.padding = "12px";
-      navLinks.style.borderRadius = "12px";
-      navLinks.style.boxShadow = "0 4px 15px rgba(0,0,0,0.1)";
-      navLinks.style.zIndex = "999";
-    }
-  });
+                        <button onClick={() => setView('home')} className="w-full bg-teal-600 text-white py-3 rounded-xl font-bold hover:bg-teal-700 transition shadow-lg">
+                            Back to Home
+                        </button>
+                    </motion.div>
+                </div>
+            );
+        };
 
-  // Close menu when a link is clicked (optional)
-  navLinks.querySelectorAll("a").forEach(link => {
-    link.addEventListener("click", () => {
-      navLinks.style.display = "none";
-    });
-  });
-</script>
+        function App() {
+            // State
+            const [view, setView] = useState('home'); 
+            const [role, setRole] = useState('guest'); 
+            const [doctors, setDoctors] = useState(INITIAL_DOCTORS);
+            const [bookings, setBookings] = useState([]);
+            const [selectedDoctor, setSelectedDoctor] = useState(null);
+            const [bookingStep, setBookingStep] = useState(0); 
+            const [showMobileMenu, setShowMobileMenu] = useState(false);
+            const [loginCreds, setLoginCreds] = useState({ id: '', pass: '' });
+            const [formData, setFormData] = useState({ name: '', phone: '', age: '', date: '', time: '' });
+            const [paymentModal, setPaymentModal] = useState(false);
+            const [loginError, setLoginError] = useState('');
+            const [lastBooking, setLastBooking] = useState(null);
 
+            // Admin Specific State
+            const [adminTab, setAdminTab] = useState('overview');
+            const [editingDoctor, setEditingDoctor] = useState(null);
+            const [bookingFilter, setBookingFilter] = useState('all');
 
+            // Persistence
+            useEffect(() => {
+                const savedBookings = localStorage.getItem('mdc_bookings');
+                const savedDoctors = localStorage.getItem('mdc_doctors');
+                if (savedBookings) setBookings(JSON.parse(savedBookings));
+                if (savedDoctors) setDoctors(JSON.parse(savedDoctors));
+            }, []);
 
+            useEffect(() => {
+                localStorage.setItem('mdc_bookings', JSON.stringify(bookings));
+                localStorage.setItem('mdc_doctors', JSON.stringify(doctors));
+            }, [bookings, doctors]);
 
+            useEffect(() => {
+                window.scrollTo(0,0);
+            }, [view]);
 
+            // Handlers
+            const handleLogin = (e) => {
+                e.preventDefault();
+                setLoginError(''); // Reset error on submit
 
-  
-<script>
-  (function () {
-    const menuBtn = document.getElementById('menuBtn');
-    const navLinks = document.getElementById('navLinks');
+                if (loginCreds.id === 'fadmin' && loginCreds.pass === 'fadmin') {
+                    setRole('admin');
+                    setView('admin');
+                } else if (loginCreds.id === 'staff' && loginCreds.pass === 'mdc@1234') { 
+                    setRole('staff');
+                    setView('staff');
+                } else {
+                    setLoginError("Invalid Credentials. Please try again.");
+                }
+            };
 
-    if (!menuBtn || !navLinks) return;
+            const handleLogout = () => {
+                setRole('guest');
+                setView('home');
+                setLoginCreds({ id: '', pass: '' });
+                setAdminTab('overview');
+                setLoginError('');
+            };
 
-    // Toggle open/close with class and animate
-    menuBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      navLinks.classList.toggle('open');
-      // animate focus for accessibility
-      if (navLinks.classList.contains('open')) {
-        // focus first link for keyboard users
-        const firstLink = navLinks.querySelector('a');
-        if (firstLink) firstLink.focus();
-      }
-    });
+            const startBooking = (doctor) => {
+                setSelectedDoctor(doctor);
+                setBookingStep(1);
+                setView('booking');
+            };
 
-    // Close when clicking a link
-    navLinks.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => {
-        navLinks.classList.remove('open');
-      });
-    });
+            const handleBookingSubmit = (e) => {
+                e.preventDefault();
+                setPaymentModal(true);
+            };
 
-    // Close when clicking outside the menu
-    document.addEventListener('click', (ev) => {
-      if (!navLinks.classList.contains('open')) return;
-      const target = ev.target;
-      if (!navLinks.contains(target) && target !== menuBtn) {
-        navLinks.classList.remove('open');
-      }
-    });
+            const confirmPayment = () => {
+                const newBooking = {
+                    id: Date.now().toString(),
+                    ...formData,
+                    doctor: selectedDoctor.name,
+                    amount: selectedDoctor.fee,
+                    status: 'Confirmed',
+                    timestamp: new Date().toISOString()
+                };
+                setBookings([newBooking, ...bookings]);
+                setLastBooking(newBooking); // Save specifically for SuccessView redirection
+                setPaymentModal(false);
+                setBookingStep(0);
+                setFormData({ name: '', phone: '', age: '', date: '', time: '' });
+                setView('success');
+            };
 
-    // Optional: close on escape key
-    document.addEventListener('keydown', (ev) => {
-      if (ev.key === 'Escape' && navLinks.classList.contains('open')) {
-        navLinks.classList.remove('open');
-        menuBtn.focus();
-      }
-    });
-  })();
-</script>
+            const handleAdminAction = (id, action) => {
+                if (action === 'delete') {
+                    if(window.confirm("Are you sure you want to delete this booking?")) {
+                        setBookings(bookings.filter(b => b.id !== id));
+                    }
+                } else if (action === 'complete') {
+                    setBookings(bookings.map(b => b.id === id ? { ...b, status: 'Completed' } : b));
+                }
+            };
 
+            const handleSaveDoctor = (e) => {
+                e.preventDefault();
+                const form = new FormData(e.target);
+                if (editingDoctor) {
+                    const updatedDocs = doctors.map(d => d.id === editingDoctor.id ? {
+                        ...d,
+                        name: form.get('name'),
+                        specialty: form.get('specialty'),
+                        qualification: form.get('qualification'),
+                        fee: form.get('fee')
+                    } : d);
+                    setDoctors(updatedDocs);
+                    setEditingDoctor(null);
+                } else {
+                    const newDoc = {
+                        id: Date.now(),
+                        name: form.get('name'),
+                        specialty: form.get('specialty'),
+                        qualification: form.get('qualification'),
+                        fee: form.get('fee'),
+                        image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=300&h=300",
+                        available: true
+                    };
+                    setDoctors([...doctors, newDoc]);
+                }
+                e.target.reset();
+            };
 
+            const handleDeleteDoctor = (id) => {
+                if(window.confirm("Delete this doctor? This cannot be undone.")) {
+                    setDoctors(doctors.filter(d => d.id !== id));
+                }
+            };
 
+            // --- Render Logic ---
+            
+            if (role === 'admin' || role === 'staff') {
+                return (
+                    <AdminDashboard 
+                        role={role}
+                        handleLogout={handleLogout}
+                        bookings={bookings}
+                        doctors={doctors}
+                        setDoctors={setDoctors}
+                        handleAdminAction={handleAdminAction}
+                        handleDeleteDoctor={handleDeleteDoctor}
+                        handleSaveDoctor={handleSaveDoctor}
+                        adminTab={adminTab}
+                        setAdminTab={setAdminTab}
+                        editingDoctor={editingDoctor}
+                        setEditingDoctor={setEditingDoctor}
+                        bookingFilter={bookingFilter}
+                        setBookingFilter={setBookingFilter}
+                    />
+                );
+            }
 
+            return (
+                <div className="font-sans text-gray-800 bg-white min-h-screen flex flex-col">
+                    <Navbar view={view} setView={setView} showMobileMenu={showMobileMenu} setShowMobileMenu={setShowMobileMenu} />
+                    
+                    <main className="flex-grow bg-gray-50">
+                        <AnimatePresence mode='wait'>
+                            {view === 'home' && <HomeView key="home" doctors={doctors} setView={setView} startBooking={startBooking} />}
+                            
+                            {view === 'booking' && (
+                                <BookingView 
+                                    key="booking"
+                                    doctors={doctors}
+                                    selectedDoctor={selectedDoctor}
+                                    setSelectedDoctor={setSelectedDoctor}
+                                    startBooking={startBooking}
+                                    handleBookingSubmit={handleBookingSubmit}
+                                    bookingStep={bookingStep}
+                                    formData={formData}
+                                    setFormData={setFormData}
+                                />
+                            )}
 
+                            {view === 'login' && (
+                                <LoginView 
+                                    key="login"
+                                    handleLogin={handleLogin}
+                                    loginCreds={loginCreds}
+                                    setLoginCreds={setLoginCreds}
+                                    setView={setView}
+                                    loginError={loginError}
+                                />
+                            )}
 
+                            {view === 'success' && <SuccessView key="success" setView={setView} lastBooking={lastBooking} />}
+                            
+                            {view === 'terms' && (
+                                <InfoPage 
+                                    key="terms" 
+                                    setView={setView}
+                                    title="Terms & Conditions" 
+                                    content={`1. Appointments are subject to doctor availability.\n2. Please arrive 15 minutes before your scheduled time.\n3. Cancellation charges may apply if cancelled within 2 hours of appointment.\n4. Emergency cases will be given priority.`} 
+                                />
+                            )}
+                            
+                            {view === 'privacy' && (
+                                <InfoPage 
+                                    key="privacy" 
+                                    setView={setView}
+                                    title="Privacy Policy" 
+                                    content={`1. We value your privacy and are committed to protecting your personal data.\n2. Your medical records are kept confidential and shared only with authorized medical personnel.\n3. We do not sell your personal information to third parties.`} 
+                                />
+                            )}
+                        </AnimatePresence>
+                    </main>
 
+                    <Footer setView={setView} />
 
-  
+                    {paymentModal && (
+                        <PaymentQR 
+                            amount={selectedDoctor?.fee} 
+                            onConfirm={confirmPayment} 
+                            onCancel={() => setPaymentModal(false)} 
+                        />
+                    )}
+                </div>
+            );
+        }
 
-  <a class="wa-float" href="https://wa.me/918001358535" id="waFloat">WhatsApp</a>
-
-  <script>
-    const WA_NUMBER = '918001358535';
-    let selectedDoctor = '';
-
-    function openWhatsAppQuick() {
-      const msg = 'Hello! I would like to book an appointment at Medical Diagnostic Centre.';
-      window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
-    }
-
-    function openWhatsAppFromForm(e) {
-      e.preventDefault();
-      const name = document.getElementById('name').value;
-      const phone = document.getElementById('phone').value;
-      const doctor = document.getElementById('doctor').value;
-      const date = document.getElementById('date').value;
-      const notes = document.getElementById('notes').value;
-      let msg = `Appointment Booking Request:%0AName: ${name}%0APhone: ${phone}%0ADoctor: ${doctor}`;
-      if (date) msg += `%0ADate: ${date}`;
-      if (notes) msg += `%0ANotes: ${notes}`;
-      window.open(`https://wa.me/${WA_NUMBER}?text=${msg}`, '_blank');
-    }
-
-    function showDoctor(name, spec, time) {
-      selectedDoctor = name;
-      document.getElementById('docName').innerText = name;
-      document.getElementById('docSpec').innerText = spec;
-      document.getElementById('docTime').innerText = 'Available: ' + time;
-      document.getElementById('doctorModal').style.display = 'flex';
-    }
-
-    function bookDoctor() {
-      const msg = `Hello! I would like to book an appointment with ${selectedDoctor} at Medical Diagnostic Centre.`;
-      window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
-    }
-
-    function closeDoctor() {
-      document.getElementById('doctorModal').style.display = 'none';
-    }
-
-    window.addEventListener('load', () => {
-      const loader = document.getElementById('loader');
-      loader.style.opacity = '0';
-      setTimeout(() => loader.remove(), 400);
-    });
-  </script>
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
 </body>
 </html>
